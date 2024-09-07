@@ -124,6 +124,8 @@ celerybeat.pid
 # Environments
 .env
 .venv
+.terraform/
+nlp_summarization_env/
 env/
 venv/
 ENV/
