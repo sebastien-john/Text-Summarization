@@ -124,6 +124,7 @@ celerybeat.pid
 # Environments
 .env
 .venv
+nlp_summarization_env
 env/
 venv/
 ENV/
