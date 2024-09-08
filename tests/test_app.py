@@ -13,6 +13,6 @@ def test_summarize_endpoint(client):
     assert 'summary' in response.json
 
 def test_summarize_text():
-    text = "This is a long text that needs to be summarized. It contains multiple sentences and should be shortened by the summarization model."
+    text = "This is a long text that needs to be summarized. This is a long text that needs to be summarized. This is a long text that needs to be summarized."
     summary = summarize_text(text)
     assert len(summary) < len(text)
