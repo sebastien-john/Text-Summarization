@@ -1,0 +1,5 @@
+__pycache__/
+nlp_summarization_env/
+.terraform/
+.pytest_cache
+
