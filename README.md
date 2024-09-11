@@ -12,4 +12,4 @@ terraform destroy
 
 # HOW TO USE
 
-curl -X POST http://127.0.0.1:5000/summarize -H "Content-Type: application/json" -d "{\"text\": \"Your long text here that you want summarized.\"}"  
+curl -X POST http://127.0.0.1:8080/summarize -H "Content-Type: application/json" -d "{\"text\": \"Your long text here that you want summarized.\"}"  
