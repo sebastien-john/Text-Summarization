@@ -162,3 +162,14 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+
+*.js
+!jest.config.js
+*.d.ts
+node_modules
+/nlp_summarization_env
+
+# CDK asset staging directory
+.cdk.staging
+cdk.out
+image/src/__pycache__/
