@@ -9,4 +9,4 @@ ENV HF_HOME=/tmp
 
 COPY src/* ${LAMBDA_TASK_ROOT}
 
-CMD [ "main.handler" ]
+CMD [ "lambda_function.handler" ]
