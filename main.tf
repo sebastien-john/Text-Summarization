@@ -2,6 +2,24 @@ provider "aws" {
   region = "us-east-2"
 }
 
+# delete all images except for the last one
+resource "null_resource" "delete_old_ecr_images" {
+  provisioner "local-exec" {
+    command = <<EOT
+      images_to_delete=$(aws ecr list-images --repository-name "cdk-hnb659fds-container-assets-767397964219-us-east-2" \
+        --query 'imageIds | sort_by(@, &imagePushedAt)[0:-1]' \
+        --output json)
+
+      if [ "$images_to_delete" != "[]" ]; then
+        aws ecr batch-delete-image --repository-name "cdk-hnb659fds-container-assets-767397964219-us-east-2" \
+          --image-ids "$images_to_delete"
+      else
+        echo "No old images to delete."
+      fi
+    EOT
+  }
+}
+
 terraform {
   backend "s3" {
     bucket = "nlp-summarization-project-sebastien"
@@ -68,7 +86,7 @@ resource "aws_iam_role_policy_attachment" "lambda_basic_execution" {
 }
 
 resource "aws_lambda_function" "nlp_summarization" {
-  filename      = "lambda_function.zip"  # Make sure to create this zip file with your Lambda code
+  filename      = "lambda_function.zip"  
   function_name = "nlp-summarization-function"
   role          = aws_iam_role.lambda_role.arn
   handler       = "lambda_function.handler"
@@ -86,7 +104,7 @@ resource "aws_sagemaker_endpoint_configuration" "nlp_endpoint_config" {
 
   production_variants {
     variant_name           = "variant-1"
-    model_name             = "text-summarization-012509"  # This should match the model name from your notebook
+    model_name             = "text-summarization-012509"  
     instance_type          = "ml.c6i.xlarge"
     initial_instance_count = 1
     initial_variant_weight = 1
@@ -97,3 +115,4 @@ resource "aws_sagemaker_endpoint" "nlp_endpoint" {
   name                 = "text-summarization-012509-Endpoint-20240924-023101"
   endpoint_config_name = aws_sagemaker_endpoint_configuration.nlp_endpoint_config.name
 }
+
