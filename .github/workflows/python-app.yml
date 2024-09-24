@@ -50,7 +50,7 @@ jobs:
     - name: Build, tag, and push Docker image to Amazon ECR
       run: |
         # Build Docker image
-        docker build -t ${{ secrets.ECR_REPOSITORY }}:latest .
+        docker build -t ${{ secrets.ECR_REPOSITORY }}:latest -f image/src/Dockerfile .
         # Tag the Docker image
         docker tag ${{ secrets.ECR_REPOSITORY }}:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
         # Push Docker image to ECR
