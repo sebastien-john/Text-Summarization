@@ -57,9 +57,11 @@ jobs:
       run: |
         FULL_IMAGE_NAME=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}:${IMAGE_TAG}
         
-        echo "Full Image Name: $FULL_IMAGE_NAME"
-        echo "Current directory structure:"
-        ls -R
+        # Assuming bash, adjust regex to handle potential issues like leading/trailing spaces or invisible chars
+        if [[ ! "${LAMBDA_FUNCTION_NAME//[[:space:]]/}" =~ ^[a-zA-Z0-9-_]+$ ]]; then
+          echo "Error: Invalid Lambda function name. It should only contain letters, numbers, hyphens, and underscores."
+          exit 1
+        fi
         
         docker build -t $FULL_IMAGE_NAME -f image/Dockerfile .
         
