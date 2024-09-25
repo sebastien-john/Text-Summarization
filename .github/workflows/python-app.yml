@@ -24,7 +24,7 @@ jobs:
     
     - name: Install dependencies
       run: |
-        echo "Debug: Length of secret: ${#secrets.LAMBDA_FUNCTION_NAME}"
+        echo "Lambda function name: '${{ secrets.LAMBDA_FUNCTION_NAME }}'"
         python -m pip install --upgrade pip
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
@@ -72,14 +72,6 @@ jobs:
 
     - name: Update Lambda function with new image
       run: |
-        # Validate Lambda function name
-        if [[ ! "${{ secrets.LAMBDA_FUNCTION_NAME }}" =~ ^[a-zA-Z0-9-_]+$ ]]; then
-          echo "Error: Invalid Lambda function name. It should only contain letters, numbers, hyphens, and underscores."
-          exit 1
-        fi
-
-        echo "Updating Lambda function: ${LAMBDA_FUNCTION_NAME//?/*}"
-        
         aws lambda update-function-code \
           --function-name ${{ secrets.LAMBDA_FUNCTION_NAME }} \
           --image-uri ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}:${IMAGE_TAG} \
