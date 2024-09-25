@@ -49,24 +49,12 @@ jobs:
     
     - name: Build, tag, and push Docker image to Amazon ECR
       env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
-        IMAGE_TAG: ${{ github.sha }}
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ github.sha }}
       run: |
-        # Print the current directory structure
-        echo "Current directory structure:"
         ls -R
-        # Ensure the src directory exists
-        mkdir -p src
-        
-        # Move necessary files to src directory if they're not already there
-        # Adjust this command based on where your source files actually are
-        mv *.py src/ || true
-        
-        # Build Docker image
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-        
-        # Push Docker image to ECR
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f image/Dockerfile .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
     - name: Update Lambda function with new image
