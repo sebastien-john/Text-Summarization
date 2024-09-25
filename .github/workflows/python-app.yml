@@ -71,14 +71,27 @@ jobs:
 
     - name: Update Lambda function with new image
       run: |
+        # Validate Lambda function name
+        if [[ ! "${{ secrets.LAMBDA_FUNCTION_NAME }}" =~ ^[a-zA-Z0-9-_]+$ ]]; then
+          echo "Error: Invalid Lambda function name. It should only contain letters, numbers, hyphens, and underscores."
+          exit 1
+        fi
+        
+        # Print Lambda function name (masked)
+        echo "Updating Lambda function: ${LAMBDA_FUNCTION_NAME//?/*}"
+        
         aws lambda update-function-code \
           --function-name ${{ secrets.LAMBDA_FUNCTION_NAME }} \
-          --image-uri ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest \
-          --region ${{ secrets.AWS_REGION }}
+          --image-uri ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}:${IMAGE_TAG} \
+          --region ${AWS_REGION}
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: ${{ secrets.AWS_REGION }}
+        AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+        ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+        LAMBDA_FUNCTION_NAME: ${{ secrets.LAMBDA_FUNCTION_NAME }}
+        IMAGE_TAG: ${{ github.sha }}
         
     - name: Apply Terraform changes
       run: |
