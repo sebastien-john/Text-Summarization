@@ -24,6 +24,7 @@ jobs:
     
     - name: Install dependencies
       run: |
+        echo "Debug: Secret value: ${{ secrets.LAMBDA_FUNCTION_NAME }}"
         python -m pip install --upgrade pip
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
@@ -76,8 +77,7 @@ jobs:
           echo "Error: Invalid Lambda function name. It should only contain letters, numbers, hyphens, and underscores."
           exit 1
         fi
-        
-        # Print Lambda function name (masked)
+
         echo "Updating Lambda function: ${LAMBDA_FUNCTION_NAME//?/*}"
         
         aws lambda update-function-code \
