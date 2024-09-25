@@ -6,18 +6,14 @@ provider "aws" {
 resource "null_resource" "delete_old_ecr_images" {
   provisioner "local-exec" {
     command = <<EOT
-      images_to_delete=$(aws ecr list-images --repository-name "cdk-hnb659fds-container-assets-767397964219-us-east-2" \
-        --query 'imageIds | sort_by(@, &imagePushedAt)[0:-1]' \
-        --output json)
-
-      if [ "$images_to_delete" != "[]" ]; then
-        aws ecr batch-delete-image --repository-name "cdk-hnb659fds-container-assets-767397964219-us-east-2" \
-          --image-ids "$images_to_delete"
-      else
-        echo "No old images to delete."
-      fi
+    echo "Running the image deletion script..."
+    aws ecr list-images --repository-name "cdk-hnb659fds-container-assets-767397964219-us-east-2" \
+      --query 'imageIds | sort_by(@, &imagePushedAt)[0:-1]' \
+      --output json
+    echo "Image deletion script completed"
     EOT
   }
+
 }
 
 terraform {
