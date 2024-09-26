@@ -2,7 +2,7 @@ import json
 import boto3
 import json
 
-sagemaker_runtime = boto3.client('sagemaker-runtime', , region_name='us-east-2')
+sagemaker_runtime = boto3.client('sagemaker-runtime', region_name='us-east-2')
 
 def summarize_text(text):
     """Call the SageMaker endpoint to summarize the text."""
