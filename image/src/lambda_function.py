@@ -6,24 +6,25 @@ sagemaker_runtime = boto3.client('sagemaker-runtime')
 
 def summarize_text(text):
     """Call the SageMaker endpoint to summarize the text."""
+    try:
+        payload = json.dumps({"text": text})
+        response = sagemaker_runtime.invoke_endpoint(
+            EndpointName='text-summarization-012509-Endpoint-20240924-023101',
+            ContentType="application/x-text",  
+            Body=payload
+        )
+
+        response_body = response['Body'].read().decode('utf-8')
+        model_predictions = json.loads(response_body)
+        summary_text = model_predictions.get("summary_text")
+        return summary_text
+
+    except Exception as e:
+        raise RuntimeError(f"Failed to summarize text: {e}")
+
     
-    endpoint_name = 'text-summarization-012509-Endpoint-20240924-023101'
-
-    encoded_text = text.encode("utf-8")
-
-    response = sagemaker_runtime.invoke_endpoint(
-        EndpointName=endpoint_name,
-        ContentType="application/x-text",
-        Body=encoded_text
-    )
-
-    response_body = response['Body'].read().decode('utf-8')
-    model_predictions = json.loads(response_body)
-    summary_text = model_predictions["summary_text"]
-
-    return summary_text
-
 def handler(event, context):
+    """AWS Lambda handler function"""
     try:
         body = json.loads(event['body'])
         text = body.get('text')
@@ -40,6 +41,7 @@ def handler(event, context):
             'statusCode': 200,
             'body': json.dumps({'summary': summary})
         }
+    
     except Exception as e:
         return {
             'statusCode': 500,
