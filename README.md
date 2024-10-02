@@ -1,19 +1,129 @@
-# AWS SETUP
+# Text Summarization Project
 
-aws configure
-aws s3 mb s3://nlp-summarization-project-YOUR-NAME
+A serverless NLP text summarization system deployed on AWS that uses a SageMaker endpoint for inference and Lambda for request handling. The system accepts text input and returns AI-generated summaries using transformer models. The goal of this project is to design a comprehensive template that covers containerization, CI/CD, IaaS, and other misc. environment stuff, which should allow someone to bootstrap themselves for a more complex ML project and automate some of the less important technical details.
 
-# TERRAFORM SETUP
+## Project Structure
+```
+.
+├── image/
+│   ├── src/
+│   │   └── lambda_function.py 
+│   └── Dockerfile  
+│   └── requirements.txt
 
-terraform init
-terraform plan
-terraform apply
-terraform destroy
+├── tests/
+│   └── test_app.py
+├── .github/
+│   └── workflows/
+│       └── python-app.yml
+├── main.tf
+├── LICENSE
+└── README.md
+```
 
-# HOW TO USE
+## Prerequisites
 
-curl -X POST "https://sxg6nnw7r64nz3kjk74bqpbyza0gyosj.lambda-url.us-east-2.on.aws" -H "Content-Type: application/json" -d "{\"text\": \"Your long text to summarize goes here...\"}"
+- AWS Account with appropriate permissions
+- AWS CLI configured
+- Terraform installed
+- Docker installed
+- Python 3.8+
 
-# TO-DO
+## Local Development
 
-configure sagemaker policy
+1. **Set Up Environment**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate
+   pip install -r requirements.txt
+   ```
+
+2. **Run Tests**
+   ```bash
+   python -m pytest
+   ```
+
+3. **Build Docker Image**
+   ```bash
+   docker build -t text-summarization -f image/Dockerfile .
+   ```
+
+## Deployment
+
+### Manual Deployment
+
+1. **Build and Push Docker Image**
+   ```bash
+   # Log in to ECR
+   aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin [YOUR_ACCOUNT_ID].dkr.ecr.us-east-2.amazonaws.com
+
+   # Build and tag
+   docker build -t text-summarization -f image/Dockerfile .
+   docker tag text-summarization:latest [YOUR_ACCOUNT_ID].dkr.ecr.us-east-2.amazonaws.com/[YOUR_REPO]:latest
+
+   # Push to ECR
+   docker push [YOUR_ACCOUNT_ID].dkr.ecr.us-east-2.amazonaws.com/[YOUR_REPO]:latest
+   ```
+
+2. **Deploy Infrastructure**
+   ```bash
+   terraform init
+   terraform plan
+   terraform apply
+   ```
+
+### CI/CD Pipeline
+
+The project includes a GitHub Actions workflow that automatically:
+- Runs tests
+- Builds and pushes the Docker image to ECR
+- Updates the Lambda function
+- Applies Terraform changes
+
+To set up CI/CD:
+
+1. Fork this repository
+2. Add the following secrets to your GitHub repository:
+   - `AWS_ACCESS_KEY_ID`
+   - `AWS_SECRET_ACCESS_KEY`
+   - `AWS_REGION`
+   - `AWS_ACCOUNT_ID`
+   - `ECR_REPOSITORY`
+   - `LAMBDA_FUNCTION_NAME`
+
+## Usage
+
+**Example using curl:**
+```bash
+curl -X POST "https://your-lambda-function-url/prod/summarize" -H "Content-Type: application/json" -d "{\"text\": \"Your long text to summarize goes here...\"}"
+```
+
+## Infrastructure
+
+The Terraform configuration creates:
+- SageMaker endpoint for model hosting
+- Lambda function for request handling
+- S3 bucket for model artifacts
+- Required IAM roles and policies
+- ECR repository cleanup (retains only the latest image)
+
+## Testing
+
+The test suite includes:
+- Unit tests for the Lambda handler
+- Input validation tests
+- Error handling tests
+
+Run tests with:
+```bash
+python -m pytest
+```
+
+## Environment Variables
+
+The Lambda function uses the following environment variables:
+- `SAGEMAKER_ENDPOINT`: Name of the SageMaker endpoint
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
