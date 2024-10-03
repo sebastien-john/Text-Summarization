@@ -48,6 +48,7 @@ A serverless NLP text summarization system deployed on AWS that uses a SageMaker
 
 2. **Deploy Infrastructure**
    ```bash
+   cd terraform
    terraform init
    terraform plan
    terraform apply
@@ -71,6 +72,11 @@ To set up CI/CD:
    - `AWS_ACCOUNT_ID`
    - `ECR_REPOSITORY`
    - `LAMBDA_FUNCTION_NAME`
+   - `MODEL_ARTIFACTS_BUCKET`
+   - `SAGEMAKER_ENDPOINT`
+   - `SAGEMAKER_ENDPOINT_CONFIG_NAME`
+   - `SAGEMAKER_ENDPOINT_NAME`
+   - `SAGEMAKER_MODEL_NAME`
 
 ## Usage
 
@@ -99,11 +105,6 @@ Run tests with:
 ```bash
 python -m pytest
 ```
-
-## Environment Variables
-
-The Lambda function uses the following environment variables:
-- `SAGEMAKER_ENDPOINT`: Name of the SageMaker endpoint
 
 ## License
 
