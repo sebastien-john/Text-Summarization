@@ -2,25 +2,6 @@
 
 A serverless NLP text summarization system deployed on AWS that uses a SageMaker endpoint for inference and Lambda for request handling. The system accepts text input and returns AI-generated summaries using transformer models. The goal of this project is to design a comprehensive template that covers containerization, CI/CD, IaaS, and other misc. environment stuff, which should allow someone to bootstrap themselves for a more complex ML project and automate some of the less important technical details.
 
-## Project Structure
-```
-.
-├── image/
-│   ├── src/
-│   │   └── lambda_function.py 
-│   └── Dockerfile  
-│   └── requirements.txt
-
-├── tests/
-│   └── test_app.py
-├── .github/
-│   └── workflows/
-│       └── python-app.yml
-├── main.tf
-├── LICENSE
-└── README.md
-```
-
 ## Prerequisites
 
 - AWS Account with appropriate permissions
