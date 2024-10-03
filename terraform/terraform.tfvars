@@ -1,0 +1,7 @@
+region                   = "us-east-2"
+ecr_repository_name      = "cdk-hnb659fds-container-assets-767397964219-us-east-2"
+model_artifacts_bucket   = "nlp-summarization-artifacts-sebastien"
+sagemaker_endpoint       = "text-summarization-012509-Endpoint-20240924-023101"
+sagemaker_endpoint_config_name = "text-summarization-012509-config"
+sagemaker_model_name     = "text-summarization-012509"
+sagemaker_endpoint_name  = "text-summarization-012509-Endpoint-20240924-023101"

@@ -91,9 +91,9 @@ The Terraform configuration creates:
 ## Testing
 
 The test suite includes:
-- Unit tests for the Lambda handler
-- Input validation tests
-- Error handling tests
+- Unit test for the Lambda handler
+- Input validation test
+- Error handling test
 
 Run tests with:
 ```bash
