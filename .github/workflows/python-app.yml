@@ -80,6 +80,13 @@ jobs:
     - name: Apply Terraform changes
       run: |
         cd terraform
+        echo "region = \"${{ secrets.AWS_REGION }}\"" > terraform.tfvars
+        echo "ecr_repository_name = \"${{ secrets.ECR_REPOSITORY }}\"" >> terraform.tfvars
+        echo "model_artifacts_bucket = \"${{ secrets.MODEL_ARTIFACTS_BUCKET }}\"" >> terraform.tfvars
+        echo "sagemaker_endpoint = \"${{ secrets.SAGEMAKER_ENDPOINT }}\"" >> terraform.tfvars
+        echo "sagemaker_endpoint_config_name = \"${{ secrets.SAGEMAKER_ENDPOINT_CONFIG_NAME }}\"" >> terraform.tfvars
+        echo "sagemaker_model_name = \"${{ secrets.SAGEMAKER_MODEL_NAME}}\"" >> terraform.tfvars
+        echo "sagemaker_endpoint_name = \"${{ secrets.SAGEMAKER_ENDPOINT_NAME }}\"" >> terraform.tfvars
         terraform init -var-file terraform.tfvars 
         terraform apply -auto-approve -var-file terraform.tfvars 
         cd ..
